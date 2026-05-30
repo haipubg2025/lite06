@@ -96,29 +96,62 @@ const formatNPCsCodex = (npcs: any[]) => {
     .join("\n\n");
 };
 
+const LocalTimer = ({ isGenerating, processingTime }: { isGenerating: boolean, processingTime: number }) => {
+  const [timer, setTimer] = useState(0);
+
+  const formatTimeStr = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let startTime: number;
+
+    const updateTimer = () => {
+      setTimer(performance.now() - startTime);
+      animationFrameId = requestAnimationFrame(updateTimer);
+    };
+
+    if (isGenerating) {
+      startTime = performance.now();
+      setTimer(0);
+      animationFrameId = requestAnimationFrame(updateTimer);
+    } else {
+      setTimer(0);
+    }
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [isGenerating]);
+
+  return <>{formatTimeStr(isGenerating ? timer : processingTime)}</>;
+};
+
 export default function Gameplay() {
-  const {
-    theme,
-    gameData,
-    fullScreenStreamData,
-    updateStreamData,
-    setIsGeneratingStream,
-    messages,
-    setMessages,
-    saveCurrentGame,
-    autoSaveCurrentGame,
-    resumeLatestGame,
-    targetWordCount,
-    temperature,
-    playerRules,
-    setPlayerRules,
-    systemLogs,
-    setSystemLogs,
-    memoryFullTurnsCount,
-    memoryLogsCount,
-    setMemoryFullTurnsCount,
-    setMemoryLogsCount,
-  } = useStore();
+  const theme = useStore((state) => state.theme);
+  const gameData = useStore((state) => state.gameData);
+  const fullScreenStreamData = useStore((state) => state.fullScreenStreamData);
+  const updateStreamData = useStore((state) => state.updateStreamData);
+  const setIsGeneratingStream = useStore((state) => state.setIsGeneratingStream);
+  const messages = useStore((state) => state.messages);
+  const setMessages = useStore((state) => state.setMessages);
+  const saveCurrentGame = useStore((state) => state.saveCurrentGame);
+  const autoSaveCurrentGame = useStore((state) => state.autoSaveCurrentGame);
+  const resumeLatestGame = useStore((state) => state.resumeLatestGame);
+  const targetWordCount = useStore((state) => state.targetWordCount);
+  const temperature = useStore((state) => state.temperature);
+  const playerRules = useStore((state) => state.playerRules);
+  const setPlayerRules = useStore((state) => state.setPlayerRules);
+  const systemLogs = useStore((state) => state.systemLogs);
+  const setSystemLogs = useStore((state) => state.setSystemLogs);
+  const memoryFullTurnsCount = useStore((state) => state.memoryFullTurnsCount);
+  const memoryLogsCount = useStore((state) => state.memoryLogsCount);
+  const setMemoryFullTurnsCount = useStore((state) => state.setMemoryFullTurnsCount);
+  const setMemoryLogsCount = useStore((state) => state.setMemoryLogsCount);
   const navigate = useNavigate();
   const isMobile = useDeviceMode();
   const [leftOpen, setLeftOpen] = useState(!isMobile);
@@ -249,37 +282,6 @@ export default function Gameplay() {
     tokensOut: 0,
     tokensTotal: 0,
   });
-  const [timer, setTimer] = useState(0);
-
-  // Format Time Helper
-  const formatTimeStr = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  useEffect(() => {
-    let animationFrameId: number;
-    let startTime: number;
-
-    const updateTimer = () => {
-      setTimer(performance.now() - startTime);
-      animationFrameId = requestAnimationFrame(updateTimer);
-    };
-
-    if (isGenerating) {
-      startTime = performance.now();
-      setTimer(0);
-      animationFrameId = requestAnimationFrame(updateTimer);
-    } else {
-      setTimer(0);
-    }
-
-    return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    };
-  }, [isGenerating]);
 
   const lastAiMsg = React.useMemo(() => {
     const aiMsgs = messages.filter((m: any) => m.sender === "ai");
@@ -1797,7 +1799,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
             >
               {/* Phần 1: Các nút thao tác trên mobile */}
               <div
-                className={`md:hidden p-4 border-b shrink-0 ${theme.group === "Dark" ? "border-white/10 bg-[#0a0a0a]" : "border-amber-200 bg-[#EFE9DD]/70"}`}
+                className={`md:hidden p-4 border-b shrink-0 ${theme.group === "Dark" ? "border-white/10" : "border-amber-200"} ${theme.bgClass}`}
               >
                 <div className="grid grid-cols-3 gap-2">
                   <button
@@ -1947,9 +1949,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                       THỜI GIAN NGAY LÚC NÀY
                     </div>
                     <div className="text-sm font-mono theme-text-base">
-                      {formatTimeStr(
-                        isGenerating ? timer : currentStats.processingTime,
-                      )}
+                      <LocalTimer isGenerating={isGenerating} processingTime={currentStats.processingTime} />
                     </div>
                   </div>
                   <div className="theme-panel shadow-none border-transparent p-2 rounded-lg">
@@ -2003,7 +2003,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               </div>
               <div
                 ref={streamScrollRef}
-                className={`flex-1 min-h-[200px] shrink-0 p-4 overflow-y-auto custom-scrollbar scroll-smooth ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-[#FFFDF9] border border-amber-200/60 rounded-xl m-2 shadow-inner"}`}
+                className={`flex-1 min-h-[200px] shrink-0 p-4 overflow-y-auto custom-scrollbar scroll-smooth ${theme.group === "Light" ? "border border-amber-200/60 rounded-xl m-2 shadow-inner" : ""} ${theme.bgClass}`}
               >
                 <div
                   className={`font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap ${theme.group === "Dark" ? "text-green-400/80" : "text-[#3E2723] font-medium"}`}
@@ -2078,7 +2078,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
             onClick={() => setShowRules(false)}
           >
             <div
-              className={`w-full h-full flex flex-col rounded-none border-0 shadow-none overflow-hidden ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-slate-50"}`}
+              className={`w-full h-full flex flex-col rounded-none border-0 shadow-none overflow-hidden ${theme.bgClass}`}
               onClick={(e) => e.stopPropagation()}
             >
               <div
@@ -2217,7 +2217,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
 
               {/* Main space */}
               <div
-                className={`flex-1 overflow-y-auto p-4 md:p-8 space-y-6 custom-scrollbar ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-white"}`}
+                className={`flex-1 overflow-y-auto p-4 md:p-8 space-y-6 custom-scrollbar ${theme.bgClass}`}
               >
                 {memoryActiveTab === "settings" && (
                   <div className="w-full space-y-8 py-4 px-4 md:px-8">
@@ -2609,7 +2609,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                 </div>
               </div>
               <div
-                className={`flex-1 overflow-y-auto relative ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-[#FFFDF9]"}`}
+                className={`flex-1 overflow-y-auto relative ${theme.bgClass}`}
               >
                 <Settings />
               </div>
@@ -2631,7 +2631,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0a0a0a] w-full max-w-5xl h-[80vh] rounded-xl border border-transparent flex flex-col overflow-hidden"
+              className={`w-full max-w-5xl h-[80vh] rounded-xl flex flex-col overflow-hidden shadow-2xl ${theme.bgClass} ${theme.group === 'Dark' ? 'border border-white/10' : 'border border-amber-300'}`}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-4 border-b border-white/10">
@@ -2661,7 +2661,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                 </button>
               </div>
               <div
-                className={`flex-1 p-6 overflow-y-auto custom-scrollbar ${expandedLog === "error" ? "bg-[#110000]" : "bg-[#0a0a0a]"}`}
+                className={`flex-1 p-6 overflow-y-auto custom-scrollbar ${expandedLog === "error" ? "bg-red-950/20" : ""} ${theme.bgClass}`}
               >
                 <div
                   className={`font-mono text-sm leading-relaxed break-words whitespace-pre-wrap ${expandedLog === "error" ? "text-red-400/80" : "text-green-400/80"}`}

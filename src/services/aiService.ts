@@ -297,7 +297,14 @@ class AIService {
         
         return; // Thành công thì kết thúc hàm
       } catch (error: any) {
-        if (currentApiKey) {
+        const errorMsgLower = (error.message || String(error)).toLowerCase();
+        const shouldBlacklist = errorMsgLower.includes('401') || 
+                                errorMsgLower.includes('403') || 
+                                errorMsgLower.includes('429') || 
+                                errorMsgLower.includes('quota') || 
+                                errorMsgLower.includes('exhausted');
+
+        if (currentApiKey && shouldBlacklist) {
           console.warn(`[AI Service] API Key lỗi, thêm vào blacklist: ${currentApiKey.substring(0, 8)}...`);
           this.apiKeysBlacklist.add(currentApiKey);
           error.message = `[Key: *${currentApiKey.slice(-4)}] ` + error.message;

@@ -81,7 +81,7 @@ export default function Sidebar({ onMobileSelect }: SidebarProps) {
                   onClick={() => handleSetView(item.path)}
                   className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-300 group cursor-pointer ${
                     isActive 
-                      ? `${(theme.accentClass || 'text-indigo-700 border-indigo-700').split(' ')[0].replace('text-', 'bg-')}/15 ${(theme.accentClass || 'text-indigo-700 border-indigo-700').split(' ')[0]} font-semibold` 
+                      ? `${theme.bgAccentClass || 'bg-indigo-700/15'} ${(theme.accentClass || 'text-indigo-700 border-indigo-700').split(' ')[0]} font-semibold` 
                       : `${theme.textSecondary} ${theme.group === 'Dark' ? 'hover:bg-white/5' : 'hover:bg-amber-500/10 hover:text-amber-950'}`
                   }`}
                 >

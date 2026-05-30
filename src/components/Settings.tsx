@@ -97,7 +97,7 @@ function ThemeCard({ theme, isActive, onSelect, currentTheme }: {
           {theme.name}
         </span>
         {isActive && (
-          <div className={`p-1 rounded-full shrink-0 ${(currentTheme.accentClass || 'text-white border-white').split(' ')[0].replace('text-', 'bg-')}`}>
+          <div className="p-1 rounded-full shrink-0" style={{ backgroundColor: currentTheme.accentHex || '#fff' }}>
             <Check className="w-3 h-3 text-black" />
           </div>
         )}
