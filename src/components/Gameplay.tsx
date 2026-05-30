@@ -36,7 +36,11 @@ import { toast } from "sonner";
 import { aiService } from "../services/aiService";
 import { ragService } from "../services/ragService";
 import Settings from "./Settings";
-import { generateSysLog, cleanErrorMessage, normalizeUsage } from "../utils/errorHandler";
+import {
+  generateSysLog,
+  cleanErrorMessage,
+  normalizeUsage,
+} from "../utils/errorHandler";
 import CharacterModal from "./CharacterModal";
 import CodexModal from "./CodexModal";
 import GalleryModal from "./GalleryModal";
@@ -133,44 +137,55 @@ export default function Gameplay() {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summarizeDuration, setSummarizeDuration] = useState(0);
 
-  const getHeaderBtnClass = (colorType: 'green' | 'amber' | 'blue' | 'emerald' | 'indigo' | 'teal' | 'pink' | 'purple' | 'gray') => {
-    const isDark = theme.group === 'Dark';
+  const getHeaderBtnClass = (
+    colorType:
+      | "green"
+      | "amber"
+      | "blue"
+      | "emerald"
+      | "indigo"
+      | "teal"
+      | "pink"
+      | "purple"
+      | "gray",
+  ) => {
+    const isDark = theme.group === "Dark";
     switch (colorType) {
-      case 'green':
-        return isDark 
-          ? "bg-green-500/20 text-green-400 hover:bg-green-500/30" 
+      case "green":
+        return isDark
+          ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
           : "bg-green-600 hover:bg-green-700 text-white shadow-sm";
-      case 'amber':
-        return isDark 
-          ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30" 
+      case "amber":
+        return isDark
+          ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
           : "bg-amber-600 hover:bg-amber-700 text-white shadow-sm";
-      case 'blue':
-        return isDark 
-          ? "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30" 
+      case "blue":
+        return isDark
+          ? "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
           : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm";
-      case 'emerald':
-        return isDark 
-          ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30" 
+      case "emerald":
+        return isDark
+          ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
           : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm";
-      case 'indigo':
-        return isDark 
-          ? "bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30" 
+      case "indigo":
+        return isDark
+          ? "bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30"
           : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm";
-      case 'teal':
-        return isDark 
-          ? "bg-teal-500/20 text-teal-400 hover:bg-teal-500/30" 
+      case "teal":
+        return isDark
+          ? "bg-teal-500/20 text-teal-400 hover:bg-teal-500/30"
           : "bg-teal-600 hover:bg-teal-700 text-white shadow-sm";
-      case 'pink':
-        return isDark 
-          ? "bg-pink-500/20 text-pink-400 hover:bg-pink-500/30" 
+      case "pink":
+        return isDark
+          ? "bg-pink-500/20 text-pink-400 hover:bg-pink-500/30"
           : "bg-pink-600 hover:bg-pink-700 text-white shadow-sm";
-      case 'purple':
-        return isDark 
-          ? "bg-purple-500/20 text-purple-400 hover:bg-purple-500/30" 
+      case "purple":
+        return isDark
+          ? "bg-purple-500/20 text-purple-400 hover:bg-purple-500/30"
           : "bg-purple-600 hover:bg-purple-700 text-white shadow-sm";
       default:
-        return isDark 
-          ? "bg-white/10 text-slate-700 dark-theme:text-white/80 hover:bg-white/20" 
+        return isDark
+          ? "bg-white/10 text-slate-700 dark-theme:text-white/80 hover:bg-white/20"
           : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm";
     }
   };
@@ -195,7 +210,7 @@ export default function Gameplay() {
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
   const scrollRef = useRef<HTMLDivElement>(null);
   const streamScrollRef = useRef<HTMLDivElement>(null);
@@ -216,7 +231,9 @@ export default function Gameplay() {
   // States for new modals
   const [showCodex, setShowCodex] = useState(false);
   const [showMemory, setShowMemory] = useState(false);
-  const [memoryActiveTab, setMemoryActiveTab] = useState<'settings' | 'logs' | 'state'>('settings');
+  const [memoryActiveTab, setMemoryActiveTab] = useState<
+    "settings" | "logs" | "state"
+  >("settings");
   const [showGallery, setShowGallery] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showMC, setShowMC] = useState(false);
@@ -473,8 +490,16 @@ ${t.userMsg?.content || ""}
         const q = userAction ? String(userAction) : "khởi đầu";
         console.log("Tìm kiếm ký ức RAG với:", q);
         // Lấy số lượng kết quả liên quan từ RAG theo tỉ lệ của memoryLogsCount (khoảng 10%) để tránh tràn token nhưng vẫn tối ưu, tối thiểu 2 và tối đa 10
-        const searchLimit = Math.max(2, Math.min(10, Math.round(memoryLogsCount / 10)));
-        const searchRes = await ragService.searchMemory(gameData.id, q, searchLimit, 0.1);
+        const searchLimit = Math.max(
+          2,
+          Math.min(10, Math.round(memoryLogsCount / 10)),
+        );
+        const searchRes = await ragService.searchMemory(
+          gameData.id,
+          q,
+          searchLimit,
+          0.1,
+        );
 
         let memorySections = [];
         if (searchRes.core && searchRes.core.length > 0) {
@@ -625,6 +650,10 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           ) {
             const cMc = { ...parsedData.mcUpdates };
             delete cMc.ghi_chu;
+            delete cMc["VÍ DỤ TÊN_CÁC_TRƯỜNG (KEYS) ĐƯỢC PHÉP"];
+            delete cMc["TÊN_CÁC_TRƯỜNG (KEYS) ĐƯỢC PHÉP UPDATE"];
+            delete cMc.IN_THIS_JSON_OUTPUT;
+
             if (Object.keys(cMc).length > 0) {
               newData.mcData = { ...newData.mcData, ...cMc };
               hasUpdate = true;
@@ -635,11 +664,20 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           if (parsedData.npcUpdates && Array.isArray(parsedData.npcUpdates)) {
             parsedData.npcUpdates.forEach((upd: any) => {
               if (upd.id && upd.updates && typeof upd.updates === "object") {
+                const cNpc = { ...upd.updates };
+                delete cNpc.ghi_chu_quan_trong;
+                delete cNpc.LƯU_Ý_KHI_XUẤT_JSON;
+                delete cNpc["TÊN_TRƯỜNG_ĐÃ_TỒN_TẠI"];
+
                 const idx = (newData.npcs || []).findIndex(
-                  (n: any) => n.name === upd.id || n.fullName === upd.id,
+                  (n: any) =>
+                    n.name === upd.id ||
+                    n.fullName === upd.id ||
+                    (n.name && upd.id.includes(n.name)) ||
+                    (n.fullName && upd.id.includes(n.fullName)),
                 );
                 if (idx !== -1) {
-                  newData.npcs[idx] = { ...newData.npcs[idx], ...upd.updates };
+                  newData.npcs[idx] = { ...newData.npcs[idx], ...cNpc };
                   hasUpdate = true;
                 }
               }
@@ -698,7 +736,10 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           }
 
           // World State Updates
-          if (parsedData.worldStateUpdate && typeof parsedData.worldStateUpdate === "string") {
+          if (
+            parsedData.worldStateUpdate &&
+            typeof parsedData.worldStateUpdate === "string"
+          ) {
             if (!newData.worldData) newData.worldData = {};
             newData.worldData.worldState = parsedData.worldStateUpdate;
             hasUpdate = true;
@@ -732,11 +773,20 @@ Hành động tiếp theo của người chơi: ${userAction}`;
         }
 
         // Dọn dẹp các điểm neo cũ trong văn bản nếu có, không hiển thị lên UI game
-        assembledText = assembledText.replace(/<div(?:[^>]*?)>[\s\S]*?\[ĐIỂM NEO K[I|Ì]ỂM TOÁN LƯỢNG TỪ\][\s\S]*?<\/div>/gi, "");
+        assembledText = assembledText.replace(
+          /<div(?:[^>]*?)>[\s\S]*?\[ĐIỂM NEO K[I|Ì]ỂM TOÁN LƯỢNG TỪ\][\s\S]*?<\/div>/gi,
+          "",
+        );
         // Or strip any div with display: none just in case
-        assembledText = assembledText.replace(/<div[^>]*style=["']display:\s*none;?["'][^>]*>[\s\S]*?<\/div>/gi, "");
+        assembledText = assembledText.replace(
+          /<div[^>]*style=["']display:\s*none;?["'][^>]*>[\s\S]*?<\/div>/gi,
+          "",
+        );
         // And strip markdown anchors not wrapped in div just in case
-        assembledText = assembledText.replace(/\*\*\s*\[ĐIỂM NEO KIỂM TOÁN LƯỢNG TỪ\][\s\S]*?\*\*/gi, "");
+        assembledText = assembledText.replace(
+          /\*\*\s*\[ĐIỂM NEO KIỂM TOÁN LƯỢNG TỪ\][\s\S]*?\*\*/gi,
+          "",
+        );
 
         const wordCount = assembledText
           ? (assembledText.match(/[\p{L}\p{N}_]+/gu) || []).length
@@ -871,11 +921,12 @@ Hành động tiếp theo của người chơi: ${userAction}`;
     if (isGenerating || isSummarizing) return;
     setIsGenerating(true);
     setIsSummarizing(true);
-    
+
     try {
       const outlineMessages = messages.filter((m) => m.outline);
-      const lastSummarizedTurnIndex = gameData.worldData?.lastSummarizedTurnIndex || 0;
-      
+      const lastSummarizedTurnIndex =
+        gameData.worldData?.lastSummarizedTurnIndex || 0;
+
       const newMessages = outlineMessages.slice(lastSummarizedTurnIndex);
       if (newMessages.length === 0) {
         toast.info("Chưa có lượt chơi mới nào để tóm tắt.");
@@ -885,11 +936,15 @@ Hành động tiếp theo của người chơi: ${userAction}`;
       }
 
       const newLogsStr = newMessages
-        .map((m, idx) => `[LƯỢT ${lastSummarizedTurnIndex + idx + 1}]\n- Tóm tắt: ${m.outline}\n- Diễn biến chi tiết: ${m.mainText}`)
+        .map(
+          (m, idx) =>
+            `[LƯỢT ${lastSummarizedTurnIndex + idx + 1}]\n- Tóm tắt: ${m.outline}\n- Diễn biến chi tiết: ${m.mainText}`,
+        )
         .join("\n\n");
-        
-      const oldWorldState = gameData.worldData?.worldState || "Chưa có trạng thái thế giới cũ.";
-      
+
+      const oldWorldState =
+        gameData.worldData?.worldState || "Chưa có trạng thái thế giới cũ.";
+
       const promptText = `TRẠNG THÁI THẾ GIỚI CŨ LƯU TRONG NÃO BỘ AI:\n"""\n${oldWorldState}\n"""\n\nDIỄN BIẾN MỚI CẦN CẬP NHẬT (TỪ LƯỢT ${lastSummarizedTurnIndex + 1} ĐẾN CHUỖI TƯƠNG TÁC HIỆN TẠI):\n"""\n${newLogsStr}\n"""\n\nYÊU CẦU: Hãy đọc kỹ Trạng thái thế giới cũ và kết hợp với các Diễn biến mới để ĐÚC KẾT & CẬP NHẬT lại một TRẠNG THÁI THẾ GIỚI MỚI NHẤT. Hãy cập nhật lại tình trạng chung của cảnh vật, trạng thái sinh lý/tâm lý, đồ đạc của Nhân Vật Chính và các NPC đang tương tác, những thay đổi quan trọng nếu có. Bỏ bớt các nội dung đã cũ không còn phù hợp. Chỉ trả lời MỘT bảng tóm tắt súc tích, hoàn chỉnh và cô đọng. Định dạng JSON output với key là "worldState".`;
 
       const stream = aiService.summarizeWorldStateStream(promptText);
@@ -899,10 +954,10 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           fullText += chunk.text;
         }
       }
-      
+
       let finalWorldState = "";
       let cleanOutput = fullText.trim();
-      
+
       // Attempt 1: Raw JSON extraction
       try {
         const startIdx = cleanOutput.indexOf("{");
@@ -923,13 +978,16 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           finalWorldState = parsedData.worldState;
         }
       }
-      
+
       // Attempt 3: If AI just printed markdown or string
       if (!finalWorldState && fullText.length > 10) {
-        finalWorldState = fullText.replace(/```json/g, "").replace(/```/g, "").trim();
+        finalWorldState = fullText
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim();
         // If it still looks like an object, try removing opening brackets
         if (finalWorldState.startsWith("{") && finalWorldState.endsWith("}")) {
-            finalWorldState = finalWorldState.slice(1, -1).trim();
+          finalWorldState = finalWorldState.slice(1, -1).trim();
         }
       }
 
@@ -940,16 +998,27 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           newData.worldData.worldState = finalWorldState;
           newData.worldData.lastSummarizedTurnIndex = outlineMessages.length; // Update the index
           currentState.setGameData(newData);
-          toast.success(`Trí nhớ AI (World State) đã cập nhật ${newMessages.length} lượt thành công!`);
-          
+          toast.success(
+            `Trí nhớ AI (World State) đã cập nhật ${newMessages.length} lượt thành công!`,
+          );
+
           // Thêm worldState vào RAG để AI tương lai có thể recall được
-          await ragService.addMemory(newData.id, "[CẬP NHẬT TRẠNG THÁI CUỐN CHIẾU]: " + finalWorldState, true);
+          await ragService.addMemory(
+            newData.id,
+            "[CẬP NHẬT TRẠNG THÁI CUỐN CHIẾU]: " + finalWorldState,
+            true,
+          );
         }
       } else {
-        toast.error("Không tìm thấy thông tin worldState trong nội dung trả về.");
+        toast.error(
+          "Không tìm thấy thông tin worldState trong nội dung trả về.",
+        );
       }
     } catch (e: any) {
-      toast.error("Quá trình tạo tóm tắt gặp lỗi: " + cleanErrorMessage(e?.message || String(e)));
+      toast.error(
+        "Quá trình tạo tóm tắt gặp lỗi: " +
+          cleanErrorMessage(e?.message || String(e)),
+      );
     } finally {
       setIsGenerating(false);
       setIsSummarizing(false);
@@ -968,7 +1037,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
     const gameName = "Matrix Lite v2";
     const worldName = state.gameData.worldData?.name || "Untitled World";
     const mcName = state.gameData.mcData?.name || "MC";
-    const aiMsgsCount = state.messages.filter((m) => m.sender === "ai" || m.sender === "system").length;
+    const aiMsgsCount = state.messages.filter(
+      (m) => m.sender === "ai" || m.sender === "system",
+    ).length;
     const turnCount = Math.max(0, aiMsgsCount - 1);
 
     const today = new Date();
@@ -1033,13 +1104,15 @@ Hành động tiếp theo của người chơi: ${userAction}`;
             <Home size={18} />
           </button>
 
-          <div className={`hidden md:flex items-center gap-1.5 md:gap-2 px-2 ml-2 border-l ${theme.group === 'Dark' ? 'border-white/10' : 'border-slate-300'}`}>
+          <div
+            className={`hidden md:flex items-center gap-1.5 md:gap-2 px-2 ml-2 border-l ${theme.group === "Dark" ? "border-white/10" : "border-slate-300"}`}
+          >
             <button
               onClick={async () => {
                 await saveCurrentGame();
                 toast.success("Đã lưu tiến trình!");
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('green')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("green")}`}
             >
               <Save size={14} /> <span>LƯU</span>
             </button>
@@ -1052,56 +1125,56 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                   toast.error("Không tìm thấy tệp lưu nào để tải!");
                 }
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('amber')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("amber")}`}
               title="Tải tiến trình mới nhất"
             >
               <RotateCcw size={14} /> <span>LOAD</span>
             </button>
             <button
               onClick={handleDownloadSave}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('blue')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("blue")}`}
             >
               <Download size={14} /> <span>SAVE</span>
             </button>
             <button
               onClick={() => setShowMC(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('emerald')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("emerald")}`}
             >
               <User size={14} /> <span>MC</span>
             </button>
             <button
               onClick={() => setShowRules(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('indigo')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("indigo")}`}
             >
               <ListTodo size={14} /> <span>RULES</span>
             </button>
             <button
               onClick={() => setShowStatus(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('teal')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("teal")}`}
             >
               <Activity size={14} /> <span>STATUS</span>
             </button>
             <button
               onClick={() => setShowGallery(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('pink')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("pink")}`}
             >
               <ImageIcon size={14} /> <span>ẢNH</span>
             </button>
             <button
               onClick={() => setShowCodex(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('amber')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("amber")}`}
             >
               <Book size={14} /> <span>CODEX</span>
             </button>
             <button
               onClick={() => setShowMemory(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass('purple')}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${getHeaderBtnClass("purple")}`}
             >
               <BrainCircuit size={14} /> <span>MEMORY</span>
             </button>
             <button
               onClick={() => setShowSettings(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${theme.group === 'Dark' ? 'bg-white/10 text-white/80 hover:bg-white/20' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider ${theme.group === "Dark" ? "bg-white/10 text-white/80 hover:bg-white/20" : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"}`}
             >
               <SettingsIcon size={14} /> <span>CẤU HÌNH</span>
             </button>
@@ -1154,9 +1227,11 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "-100%", opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className={`absolute md:relative left-0 top-0 bottom-0 w-72 md:w-80 border-r z-30 flex flex-col ${theme.group === 'Dark' ? 'border-white/10 bg-black/60 backdrop-blur-2xl text-white' : 'border-amber-200 bg-[#F4EFE6]/95 backdrop-blur-md shadow-lg text-[#3E2723]'}`}
+              className={`absolute md:relative left-0 top-0 bottom-0 w-72 md:w-80 border-r z-30 flex flex-col ${theme.group === "Dark" ? "border-white/10 bg-black/60 backdrop-blur-2xl text-white" : "border-amber-200 bg-[#F4EFE6]/95 backdrop-blur-md shadow-lg text-[#3E2723]"}`}
             >
-              <div className={`p-4 border-b shrink-0 ${theme.group === 'Dark' ? 'border-white/10' : 'border-amber-200'}`}>
+              <div
+                className={`p-4 border-b shrink-0 ${theme.group === "Dark" ? "border-white/10" : "border-amber-200"}`}
+              >
                 <h3
                   className={
                     "text-sm font-bold uppercase tracking-widest opacity-50 " +
@@ -1174,31 +1249,63 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                         loc.id === npc.name || loc.id === npc.fullName,
                     )?.location;
                     const locStr = currentNpcLoc || "";
-                    const isUnknownLoc = !locStr || locStr.toLowerCase().includes("chưa rõ") || locStr.toLowerCase().includes("không rõ") || locStr.toLowerCase() === "n/a" || locStr.toLowerCase().includes("unknown");
-                    const isMale = npc.gender?.toLowerCase() === 'nam' || npc.gender?.toLowerCase() === 'male' || npc.gender?.toLowerCase().includes('nam giới');
-                    return { npc, index, locStr: locStr || "Vị trí chưa rõ", isUnknownLoc, isMale };
+                    const isUnknownLoc =
+                      !locStr ||
+                      locStr.toLowerCase().includes("chưa rõ") ||
+                      locStr.toLowerCase().includes("không rõ") ||
+                      locStr.toLowerCase() === "n/a" ||
+                      locStr.toLowerCase().includes("unknown");
+                    const isMale =
+                      npc.gender?.toLowerCase() === "nam" ||
+                      npc.gender?.toLowerCase() === "male" ||
+                      npc.gender?.toLowerCase().includes("nam giới");
+                    return {
+                      npc,
+                      index,
+                      locStr: locStr || "Vị trí chưa rõ",
+                      isUnknownLoc,
+                      isMale,
+                    };
                   })
                   .sort((a, b) => {
                     if (a.isUnknownLoc === b.isUnknownLoc) return 0;
                     return a.isUnknownLoc ? 1 : -1;
                   })
                   .map(({ npc, index, locStr, isUnknownLoc, isMale }) => {
-                    const bgClass = isMale 
-                      ? (theme.group === 'Dark' ? "bg-blue-500/5 hover:bg-blue-500/10" : "bg-sky-50/70 hover:bg-sky-100/70 text-[#3E2723]") 
-                      : (theme.group === 'Dark' ? "bg-pink-500/5 hover:bg-pink-500/10" : "bg-pink-50/70 hover:bg-pink-100/70 text-[#3E2723]");
-                    const borderClass = isMale 
-                      ? (theme.group === 'Dark' ? "border-blue-500/20 hover:border-blue-500/30" : "border-amber-200 hover:border-sky-300/80") 
-                      : (theme.group === 'Dark' ? "border-pink-500/20 hover:border-pink-500/30" : "border-amber-200 hover:border-pink-300/80");
-                    const iconBgClass = isMale 
-                      ? (theme.group === 'Dark' ? "bg-blue-500/10" : "bg-sky-100") 
-                      : (theme.group === 'Dark' ? "bg-pink-500/10" : "bg-pink-100");
-                    const iconBorderClass = isMale 
-                      ? (theme.group === 'Dark' ? "border-blue-500/20" : "border-sky-200") 
-                      : (theme.group === 'Dark' ? "border-pink-500/20" : "border-pink-200");
-                    const textClass = isMale 
-                      ? "text-sky-600 font-bold" 
+                    const bgClass = isMale
+                      ? theme.group === "Dark"
+                        ? "bg-blue-500/5 hover:bg-blue-500/10"
+                        : "bg-sky-50/70 hover:bg-sky-100/70 text-[#3E2723]"
+                      : theme.group === "Dark"
+                        ? "bg-pink-500/5 hover:bg-pink-500/10"
+                        : "bg-pink-50/70 hover:bg-pink-100/70 text-[#3E2723]";
+                    const borderClass = isMale
+                      ? theme.group === "Dark"
+                        ? "border-blue-500/20 hover:border-blue-500/30"
+                        : "border-amber-200 hover:border-sky-300/80"
+                      : theme.group === "Dark"
+                        ? "border-pink-500/20 hover:border-pink-500/30"
+                        : "border-amber-200 hover:border-pink-300/80";
+                    const iconBgClass = isMale
+                      ? theme.group === "Dark"
+                        ? "bg-blue-500/10"
+                        : "bg-sky-100"
+                      : theme.group === "Dark"
+                        ? "bg-pink-500/10"
+                        : "bg-pink-100";
+                    const iconBorderClass = isMale
+                      ? theme.group === "Dark"
+                        ? "border-blue-500/20"
+                        : "border-sky-200"
+                      : theme.group === "Dark"
+                        ? "border-pink-500/20"
+                        : "border-pink-200";
+                    const textClass = isMale
+                      ? "text-sky-600 font-bold"
                       : "text-pink-600 font-bold";
-                    const opacityClass = isUnknownLoc ? "opacity-60 hover:opacity-100" : "opacity-100";
+                    const opacityClass = isUnknownLoc
+                      ? "opacity-60 hover:opacity-100"
+                      : "opacity-100";
 
                     return (
                       <div
@@ -1208,15 +1315,19 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                       >
                         <div className="flex items-start gap-3">
                           {npc.avatar ? (
-                            <div className={`w-16 shrink-0 overflow-hidden rounded-md border aspect-[2/3] ${iconBorderClass}`}>
+                            <div
+                              className={`w-16 shrink-0 overflow-hidden rounded-md border aspect-[2/3] ${iconBorderClass}`}
+                            >
                               <LazyImage
                                 src={npc.avatar}
-                                  alt="Avatar"
+                                alt="Avatar"
                                 className="w-full h-full"
                               />
                             </div>
                           ) : (
-                            <div className={`w-16 shrink-0 flex items-center justify-center rounded-md border aspect-[2/3] ${iconBgClass} ${iconBorderClass}`}>
+                            <div
+                              className={`w-16 shrink-0 flex items-center justify-center rounded-md border aspect-[2/3] ${iconBgClass} ${iconBorderClass}`}
+                            >
                               <User size={32} className={textClass} />
                             </div>
                           )}
@@ -1229,7 +1340,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             >
                               {npc.fullName || npc.name || "Chưa đặt tên"}
                             </h4>
-                            <div className={`flex items-start gap-1 text-[10px] border px-2 py-1.5 rounded-md w-full mt-0.5 ${theme.group === 'Dark' ? 'text-white/70 bg-white/5 border-transparent' : 'text-[#5C4033] bg-[#FFFDFB]/80 border-amber-200/60'}`}>
+                            <div
+                              className={`flex items-start gap-1 text-[10px] border px-2 py-1.5 rounded-md w-full mt-0.5 ${theme.group === "Dark" ? "text-white/70 bg-white/5 border-transparent" : "text-[#5C4033] bg-[#FFFDFB]/80 border-amber-200/60"}`}
+                            >
                               <MapPin
                                 size={12}
                                 className="text-green-500 shrink-0 mt-0.5"
@@ -1254,7 +1367,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
         </AnimatePresence>
 
         {/* Center - Gameplay Content */}
-        <div className={`flex-1 flex flex-col min-w-0 ${theme.group === 'Dark' ? 'bg-transparent' : 'bg-[#FAF6F0]'}`}>
+        <div
+          className={`flex-1 flex flex-col min-w-0 ${theme.group === "Dark" ? "bg-transparent" : "bg-[#FAF6F0]"}`}
+        >
           <div
             className="flex-1 overflow-y-auto py-4 md:py-8 px-4 md:px-0 space-y-8 custom-scrollbar"
             ref={scrollRef}
@@ -1267,15 +1382,30 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               >
                 {turn.userMsg && (
                   // USER MESSAGE (Full width)
-                  <div className={`w-full rounded-2xl border p-5 md:p-6 shadow-md backdrop-blur-md relative overflow-hidden ${theme.group === 'Dark' ? 'bg-blue-900/10 border-blue-500/20 text-blue-50' : 'bg-amber-100/50 border-amber-200/60 text-[#3E2723]'}`}>
-                    <div className={`absolute top-0 left-0 w-1 h-full ${theme.group === 'Dark' ? 'bg-blue-500/50' : 'bg-amber-600/60'}`} />
+                  <div
+                    className={`w-full rounded-2xl border p-5 md:p-6 shadow-md backdrop-blur-md relative overflow-hidden ${theme.group === "Dark" ? "bg-blue-900/10 border-blue-500/20 text-blue-50" : "bg-amber-100/50 border-amber-200/60 text-[#3E2723]"}`}
+                  >
+                    <div
+                      className={`absolute top-0 left-0 w-1 h-full ${theme.group === "Dark" ? "bg-blue-500/50" : "bg-amber-600/60"}`}
+                    />
                     <div className="flex items-center gap-2 mb-3">
-                      <User size={16} className={theme.group === 'Dark' ? "text-blue-400" : "text-amber-700"} />
-                      <span className={`text-xs font-bold uppercase tracking-wider ${theme.group === 'Dark' ? "text-blue-400/80" : "text-amber-800/80"}`}>
+                      <User
+                        size={16}
+                        className={
+                          theme.group === "Dark"
+                            ? "text-blue-400"
+                            : "text-amber-700"
+                        }
+                      />
+                      <span
+                        className={`text-xs font-bold uppercase tracking-wider ${theme.group === "Dark" ? "text-blue-400/80" : "text-amber-800/80"}`}
+                      >
                         Người chơi hành động:
                       </span>
                     </div>
-                    <div className={`whitespace-pre-wrap leading-relaxed text-base md:text-lg font-medium opacity-95 ${theme.group === 'Dark' ? 'text-blue-5' : 'text-[#3E2723]'}`}>
+                    <div
+                      className={`whitespace-pre-wrap leading-relaxed text-base md:text-lg font-medium opacity-95 ${theme.group === "Dark" ? "text-blue-5" : "text-[#3E2723]"}`}
+                    >
                       {turn.userMsg.content}
                     </div>
                   </div>
@@ -1283,7 +1413,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
 
                 {turn.aiMsg && (
                   // AI/SYSTEM MESSAGE (Full width)
-                  <div className={`w-full rounded-2xl border shadow-xl backdrop-blur-md overflow-hidden flex flex-col ${theme.group === 'Dark' ? 'bg-black/60 border-transparent text-white/90' : 'bg-[#FFFDF9] border-amber-200/80 text-[#3E2723]'}`}>
+                  <div
+                    className={`w-full rounded-2xl border shadow-xl backdrop-blur-md overflow-hidden flex flex-col ${theme.group === "Dark" ? "bg-black/60 border-transparent text-white/90" : "bg-[#FFFDF9] border-amber-200/80 text-[#3E2723]"}`}
+                  >
                     {/* Header AI Message */}
                     <div className="flex items-center gap-2 p-3 theme-panel shadow-none border-b border-transparent">
                       <Sparkles
@@ -1294,7 +1426,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             : "text-purple-500"
                         }
                       />
-                      <span className={`text-xs font-bold uppercase tracking-wider ${theme.group === 'Dark' ? 'text-purple-400/80' : 'text-[#5C4033]/80'}`}>
+                      <span
+                        className={`text-xs font-bold uppercase tracking-wider ${theme.group === "Dark" ? "text-purple-400/80" : "text-[#5C4033]/80"}`}
+                      >
                         {turn.aiMsg.isStreaming
                           ? "Matrix Lite v2 đang kiến tạo..."
                           : "Lượt " + String(turn.index).padStart(4, "0")}
@@ -1320,7 +1454,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                               } else {
                                 setEditingTurnId(turn.aiMsg.id);
                                 setEditingContent(
-                                  turn.aiMsg.mainText || turn.aiMsg.content || "",
+                                  turn.aiMsg.mainText ||
+                                    turn.aiMsg.content ||
+                                    "",
                                 );
                               }
                             }}
@@ -1351,8 +1487,12 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                               if (turn.userMsg?.id) {
                                 idsToDelete.push(turn.userMsg.id);
                               }
-                              setMessages((prev) => prev.filter((m) => !idsToDelete.includes(m.id)));
-                              toast.success("Đã xóa phản hồi và quay lại lượt trước thành công!");
+                              setMessages((prev) =>
+                                prev.filter((m) => !idsToDelete.includes(m.id)),
+                              );
+                              toast.success(
+                                "Đã xóa phản hồi và quay lại lượt trước thành công!",
+                              );
                             }}
                             className="px-3 py-1.5 flex items-center gap-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all text-[10px] font-bold tracking-wider border border-red-500/10 hover:border-red-500/20 cursor-pointer"
                             title="Xóa phản hồi này ngay lập tức"
@@ -1398,7 +1538,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             />
                           ) : (
                             (turn.aiMsg.mainText || turn.aiMsg.content) && (
-                              <div className={`whitespace-pre-wrap leading-loose text-base md:text-lg opacity-95 font-medium ${theme.group === 'Dark' ? '' : 'text-[#2C1D11]'}`}>
+                              <div
+                                className={`whitespace-pre-wrap leading-loose text-base md:text-lg opacity-95 font-medium ${theme.group === "Dark" ? "" : "text-[#2C1D11]"}`}
+                              >
                                 {turn.aiMsg.mainText || turn.aiMsg.content}
                               </div>
                             )
@@ -1407,8 +1549,12 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                           {/* Suggested Actions */}
                           {turn.aiMsg.suggestedActions &&
                             turn.aiMsg.suggestedActions.length > 0 && (
-                              <div className={`pt-4 mt-6 border-t ${theme.group === 'Dark' ? 'border-white/10' : 'border-amber-200/50'}`}>
-                                <h4 className={`text-sm font-bold uppercase tracking-widest mb-4 opacity-80 ${theme.group === 'Dark' ? 'text-blue-400' : 'text-amber-800'}`}>
+                              <div
+                                className={`pt-4 mt-6 border-t ${theme.group === "Dark" ? "border-white/10" : "border-amber-200/50"}`}
+                              >
+                                <h4
+                                  className={`text-sm font-bold uppercase tracking-widest mb-4 opacity-80 ${theme.group === "Dark" ? "text-blue-400" : "text-amber-800"}`}
+                                >
                                   Gợi ý hành động:
                                 </h4>
                                 <div className="grid grid-cols-1 gap-0 -mx-5 md:-mx-6 border-t border-transparent">
@@ -1460,29 +1606,35 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                                             }}
                                             disabled={isGenerating}
                                             className={`w-full text-left px-5 md:px-6 py-4 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed flex flex-col relative overflow-hidden bg-transparent border-b ${
-                                              theme.group === 'Dark' 
-                                                ? 'border-white/5 hover:bg-black/20' 
-                                                : 'border-amber-100 hover:bg-amber-500/5'
+                                              theme.group === "Dark"
+                                                ? "border-white/5 hover:bg-black/20"
+                                                : "border-amber-100 hover:bg-amber-500/5"
                                             }`}
                                           >
                                             <div className="flex flex-col items-start w-full md:pr-10">
                                               <div className="flex items-start">
-                                                <span className={`font-bold leading-tight text-base ${theme.group === 'Dark' ? 'text-white/95' : 'text-[#3E2723]'}`}>
+                                                <span
+                                                  className={`font-bold leading-tight text-base ${theme.group === "Dark" ? "text-white/95" : "text-[#3E2723]"}`}
+                                                >
                                                   {actionTitle}
                                                 </span>
                                               </div>
                                               {details && (
-                                                <div className={`text-sm mt-1.5 leading-relaxed ${theme.group === 'Dark' ? 'text-slate-500 dark-theme:text-white/60' : 'text-[#5C4033]/85'}`}>
+                                                <div
+                                                  className={`text-sm mt-1.5 leading-relaxed ${theme.group === "Dark" ? "text-slate-500 dark-theme:text-white/60" : "text-[#5C4033]/85"}`}
+                                                >
                                                   {details}
                                                 </div>
                                               )}
                                               {timeCost && (
                                                 <div className="mt-2 text-left">
-                                                  <span className={`text-[11px] font-mono border px-2 py-1 rounded inline-flex items-center gap-1.5 ${
-                                                    theme.group === 'Dark' 
-                                                      ? 'text-white/40 border-transparent bg-black/20' 
-                                                      : 'text-[#5C4033] border-amber-200 bg-amber-100/40'
-                                                  }`}>
+                                                  <span
+                                                    className={`text-[11px] font-mono border px-2 py-1 rounded inline-flex items-center gap-1.5 ${
+                                                      theme.group === "Dark"
+                                                        ? "text-white/40 border-transparent bg-black/20"
+                                                        : "text-[#5C4033] border-amber-200 bg-amber-100/40"
+                                                    }`}
+                                                  >
                                                     <Clock className="w-3 h-3 opacity-70" />
                                                     Tiêu tốn {timeCost}
                                                   </span>
@@ -1496,9 +1648,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                                               copyToClipboard(actionText);
                                             }}
                                             className={`absolute top-4 right-5 md:right-6 p-2 rounded-lg transition-all border ${
-                                              theme.group === 'Dark' 
-                                                ? 'bg-white/10 border-transparent hover:bg-white/20 text-white/70' 
-                                                : 'bg-amber-100/50 border-amber-200/40 hover:bg-amber-100 text-[#5C4033]'
+                                              theme.group === "Dark"
+                                                ? "bg-white/10 border-transparent hover:bg-white/20 text-white/70"
+                                                : "bg-amber-100/50 border-amber-200/40 hover:bg-amber-100 text-[#5C4033]"
                                             }`}
                                             title="Copy hành động"
                                           >
@@ -1526,11 +1678,13 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           </div>
 
           {/* Footer */}
-          <footer className={`shrink-0 border-t z-20 flex flex-col gap-3 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lg ${
-            theme.group === 'Dark' 
-              ? 'border-white/10 bg-black/60 backdrop-blur-2xl' 
-              : 'border-amber-200 bg-[#EFE9DD]/90 backdrop-blur-xl'
-          }`}>
+          <footer
+            className={`shrink-0 border-t z-20 flex flex-col gap-3 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lg ${
+              theme.group === "Dark"
+                ? "border-white/10 bg-black/60 backdrop-blur-2xl"
+                : "border-amber-200 bg-[#EFE9DD]/90 backdrop-blur-xl"
+            }`}
+          >
             <div className="w-full max-w-5xl mx-auto relative group">
               <textarea
                 value={inputAction}
@@ -1547,7 +1701,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                     : "Hành động tiếp theo của bạn (hỗ trợ xuống dòng bằng Shift+Enter)..."
                 }
                 className={`w-full theme-input border-transparent focus:border-blue-500/50 rounded-xl py-4 pl-4 pr-14 theme-text-base placeholder:text-slate-500 dark-theme:placeholder:text-white/30 outline-none resize-none min-h-[60px] max-h-[150px] custom-scrollbar focus:ring-1 focus:ring-blue-500/30 transition-all font-medium disabled:opacity-50 ${
-                  theme.group === 'Dark' ? 'focus:bg-black/60' : 'bg-white text-[#3E2723]'
+                  theme.group === "Dark"
+                    ? "focus:bg-black/60"
+                    : "bg-white text-[#3E2723]"
                 }`}
                 rows={
                   inputAction.split("\n").length > 1
@@ -1572,8 +1728,12 @@ Hành động tiếp theo của người chơi: ${userAction}`;
 
             <div className="w-full max-w-5xl mx-auto flex items-center justify-between">
               {/* Pagination */}
-              <div className={`flex items-center gap-1.5 md:gap-3 theme-panel shadow-none rounded-lg p-1 border ${theme.group === 'Dark' ? 'border-white/5' : 'border-amber-200/60 bg-[#FAF6F0]'}`}>
-                <span className={`text-[10px] md:text-xs font-bold uppercase tracking-wider px-2 pl-3 ${theme.group === 'Dark' ? 'text-white/50' : 'text-[#5C4033]'}`}>
+              <div
+                className={`flex items-center gap-1.5 md:gap-3 theme-panel shadow-none rounded-lg p-1 border ${theme.group === "Dark" ? "border-white/5" : "border-amber-200/60 bg-[#FAF6F0]"}`}
+              >
+                <span
+                  className={`text-[10px] md:text-xs font-bold uppercase tracking-wider px-2 pl-3 ${theme.group === "Dark" ? "text-white/50" : "text-[#5C4033]"}`}
+                >
                   TRANG
                 </span>
                 <button
@@ -1583,9 +1743,13 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                 >
                   <ChevronLeft size={16} />
                 </button>
-                <div className={`text-xs md:text-sm font-black w-12 text-center ${theme.group === 'Dark' ? 'text-blue-400' : 'text-amber-800'}`}>
+                <div
+                  className={`text-xs md:text-sm font-black w-12 text-center ${theme.group === "Dark" ? "text-blue-400" : "text-amber-800"}`}
+                >
                   {currentPage}{" "}
-                  <span className={`${theme.group === 'Dark' ? 'text-white/30' : 'text-[#5C4033]/60'} font-normal`}>
+                  <span
+                    className={`${theme.group === "Dark" ? "text-white/30" : "text-[#5C4033]/60"} font-normal`}
+                  >
                     / {totalPages}
                   </span>
                 </div>
@@ -1629,17 +1793,19 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className={`absolute md:relative right-0 top-0 bottom-0 w-72 md:w-96 border-l z-30 flex flex-col shadow-2xl overflow-y-auto custom-scrollbar ${theme.group === 'Dark' ? 'border-white/10 bg-black/80 backdrop-blur-2xl text-white' : 'border-amber-200 bg-[#F4EFE6]/95 backdrop-blur-md shadow-xl text-[#3E2723]'}`}
+              className={`absolute md:relative right-0 top-0 bottom-0 w-72 md:w-96 border-l z-30 flex flex-col shadow-2xl overflow-y-auto custom-scrollbar ${theme.group === "Dark" ? "border-white/10 bg-black/80 backdrop-blur-2xl text-white" : "border-amber-200 bg-[#F4EFE6]/95 backdrop-blur-md shadow-xl text-[#3E2723]"}`}
             >
               {/* Phần 1: Các nút thao tác trên mobile */}
-              <div className={`md:hidden p-4 border-b shrink-0 ${theme.group === 'Dark' ? 'border-white/10 bg-[#0a0a0a]' : 'border-amber-200 bg-[#EFE9DD]/70'}`}>
+              <div
+                className={`md:hidden p-4 border-b shrink-0 ${theme.group === "Dark" ? "border-white/10 bg-[#0a0a0a]" : "border-amber-200 bg-[#EFE9DD]/70"}`}
+              >
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={async () => {
                       await saveCurrentGame();
                       toast.success("Đã lưu tiến trình!");
                     }}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('green')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("green")}`}
                   >
                     <Save size={16} /> <span>LƯU</span>
                   </button>
@@ -1652,56 +1818,56 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                         toast.error("Không tìm thấy tệp lưu nào để tải!");
                       }
                     }}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('amber')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("amber")}`}
                     title="Tải tiến trình mới nhất"
                   >
                     <RotateCcw size={16} /> <span>LOAD</span>
                   </button>
                   <button
                     onClick={handleDownloadSave}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('blue')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("blue")}`}
                   >
                     <Download size={16} /> <span>SAVE</span>
                   </button>
                   <button
                     onClick={() => setShowMC(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('emerald')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("emerald")}`}
                   >
                     <User size={16} /> <span>MC</span>
                   </button>
                   <button
                     onClick={() => setShowRules(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('indigo')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("indigo")}`}
                   >
                     <ListTodo size={16} /> <span>RULES</span>
                   </button>
                   <button
                     onClick={() => setShowStatus(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('teal')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("teal")}`}
                   >
                     <Activity size={16} /> <span>STATUS</span>
                   </button>
                   <button
                     onClick={() => setShowGallery(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('pink')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("pink")}`}
                   >
                     <ImageIcon size={16} /> <span>ẢNH</span>
                   </button>
                   <button
                     onClick={() => setShowCodex(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('amber')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("amber")}`}
                   >
                     <Book size={16} /> <span>CODEX</span>
                   </button>
                   <button
                     onClick={() => setShowMemory(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass('purple')}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${getHeaderBtnClass("purple")}`}
                   >
                     <BrainCircuit size={16} /> <span>MEMORY</span>
                   </button>
                   <button
                     onClick={() => setShowSettings(true)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${theme.group === 'Dark' ? 'bg-white/10 text-white/80 hover:bg-white/20' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg transition-colors cursor-pointer text-[10px] font-bold tracking-wider ${theme.group === "Dark" ? "bg-white/10 text-white/80 hover:bg-white/20" : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"}`}
                   >
                     <SettingsIcon size={16} /> <span>CẤU HÌNH</span>
                   </button>
@@ -1709,31 +1875,49 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               </div>
 
               {/* Tên Thế Giới */}
-              <div className={`p-4 border-b shrink-0 flex flex-col gap-3 ${theme.group === 'Dark' ? 'border-white/10 bg-[#050505]' : 'border-amber-200 bg-[#FFFDF9]'}`}>
+              <div
+                className={`p-4 border-b shrink-0 flex flex-col gap-3 ${theme.group === "Dark" ? "border-white/10 bg-[#050505]" : "border-amber-200 bg-[#FFFDF9]"}`}
+              >
                 <div>
-                  <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${theme.group === 'Dark' ? 'text-white/50' : 'text-[#5C4033]/80'}`}>
+                  <div
+                    className={`text-[10px] font-black uppercase tracking-widest mb-1 ${theme.group === "Dark" ? "text-white/50" : "text-[#5C4033]/80"}`}
+                  >
                     THẾ GIỚI HIỆN TẠI
                   </div>
                   <div className="text-sm font-bold theme-text-base drop-shadow-sm">
                     {gameData.worldData?.name || "Thế giới vô danh"}
                   </div>
                 </div>
-                <div className={`flex flex-col gap-2 pt-3 border-t ${theme.group === 'Dark' ? 'border-white/10' : 'border-amber-200/50'}`}>
+                <div
+                  className={`flex flex-col gap-2 pt-3 border-t ${theme.group === "Dark" ? "border-white/10" : "border-amber-200/50"}`}
+                >
                   <div className="flex gap-2">
                     <Clock
                       size={14}
-                      className={theme.group === 'Dark' ? "text-blue-500 shrink-0 mt-0.5" : "text-amber-700 shrink-0 mt-0.5"}
+                      className={
+                        theme.group === "Dark"
+                          ? "text-blue-500 shrink-0 mt-0.5"
+                          : "text-amber-700 shrink-0 mt-0.5"
+                      }
                     />
-                    <span className={`text-[11px] font-mono whitespace-pre-wrap break-words leading-tight ${theme.group === 'Dark' ? 'text-white/70' : 'text-[#3E2723]'}`}>
+                    <span
+                      className={`text-[11px] font-mono whitespace-pre-wrap break-words leading-tight ${theme.group === "Dark" ? "text-white/70" : "text-[#3E2723]"}`}
+                    >
                       {currentWorldTime}
                     </span>
                   </div>
                   <div className="flex gap-2">
                     <MapPin
                       size={14}
-                      className={theme.group === 'Dark' ? "text-green-500 shrink-0 mt-0.5" : "text-emerald-700 shrink-0 mt-0.5"}
+                      className={
+                        theme.group === "Dark"
+                          ? "text-green-500 shrink-0 mt-0.5"
+                          : "text-emerald-700 shrink-0 mt-0.5"
+                      }
                     />
-                    <span className={`text-[11px] font-mono whitespace-pre-wrap break-words leading-tight ${theme.group === 'Dark' ? 'text-white/70' : 'text-[#3E2723]'}`}>
+                    <span
+                      className={`text-[11px] font-mono whitespace-pre-wrap break-words leading-tight ${theme.group === "Dark" ? "text-white/70" : "text-[#3E2723]"}`}
+                    >
                       {currentLoc}
                     </span>
                   </div>
@@ -1741,19 +1925,25 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               </div>
 
               {/* Phần 2: Màn Hình Stats */}
-              <div className={`p-4 border-b shrink-0 relative ${theme.group === 'Dark' ? 'border-white/10 bg-[#050505]' : 'border-amber-200 bg-[#F4EFE6]/50'}`}>
+              <div
+                className={`p-4 border-b shrink-0 relative ${theme.group === "Dark" ? "border-white/10 bg-[#050505]" : "border-amber-200 bg-[#F4EFE6]/50"}`}
+              >
                 {isGenerating && (
                   <Loader2
                     size={16}
                     className="absolute top-4 right-4 animate-spin text-purple-400"
                   />
                 )}
-                <h4 className={`text-[10px] font-black uppercase mb-3 tracking-widest ${theme.group === 'Dark' ? 'text-blue-500' : 'text-sky-700'}`}>
+                <h4
+                  className={`text-[10px] font-black uppercase mb-3 tracking-widest ${theme.group === "Dark" ? "text-blue-500" : "text-sky-700"}`}
+                >
                   Màn Hình Stats
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="theme-panel shadow-none border-transparent p-2 rounded-lg">
-                    <div className={`text-[10px] mb-1 ${theme.group === 'Dark' ? 'text-white/50' : 'text-[#5C4033]/80 font-bold'}`}>
+                    <div
+                      className={`text-[10px] mb-1 ${theme.group === "Dark" ? "text-white/50" : "text-[#5C4033]/80 font-bold"}`}
+                    >
                       THỜI GIAN NGAY LÚC NÀY
                     </div>
                     <div className="text-sm font-mono theme-text-base">
@@ -1763,7 +1953,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                     </div>
                   </div>
                   <div className="theme-panel shadow-none border-transparent p-2 rounded-lg">
-                    <div className={`text-[10px] mb-1 ${theme.group === 'Dark' ? 'text-white/50' : 'text-[#5C4033]/80 font-bold'}`}>
+                    <div
+                      className={`text-[10px] mb-1 ${theme.group === "Dark" ? "text-white/50" : "text-[#5C4033]/80 font-bold"}`}
+                    >
                       SỐ CHỮ (VĂN BẢN)
                     </div>
                     <div className="text-sm font-mono theme-text-base">
@@ -1771,13 +1963,21 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                     </div>
                   </div>
                   <div className="theme-panel shadow-none border-transparent p-2 rounded-lg col-span-2">
-                    <div className={`text-[10px] mb-1 ${theme.group === 'Dark' ? 'text-white/50' : 'text-[#5C4033]/80 font-bold'}`}>
+                    <div
+                      className={`text-[10px] mb-1 ${theme.group === "Dark" ? "text-white/50" : "text-[#5C4033]/80 font-bold"}`}
+                    >
                       TOKENS (IN / OUT / TỔNG)
                     </div>
                     <div className="text-sm font-mono theme-text-base flex gap-1">
                       <span>{currentStats.tokensIn}</span> /{" "}
                       <span>{currentStats.tokensOut}</span> /{" "}
-                      <span className={theme.group === 'Dark' ? "text-purple-400 font-bold" : "text-purple-700 font-extrabold"}>
+                      <span
+                        className={
+                          theme.group === "Dark"
+                            ? "text-purple-400 font-bold"
+                            : "text-purple-700 font-extrabold"
+                        }
+                      >
                         {currentStats.tokensTotal}
                       </span>
                     </div>
@@ -1786,30 +1986,40 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               </div>
 
               {/* Phần 3: Deep Reasoning */}
-              <div className={`p-3 border-b flex justify-between items-center shrink-0 ${theme.group === 'Dark' ? 'border-white/10' : 'border-amber-200/50 bg-[#FFFDF9]/40'}`}>
-                <h4 className={`text-[10px] font-black uppercase tracking-widest ${theme.group === 'Dark' ? 'text-purple-400' : 'text-purple-700'}`}>
+              <div
+                className={`p-3 border-b flex justify-between items-center shrink-0 ${theme.group === "Dark" ? "border-white/10" : "border-amber-200/50 bg-[#FFFDF9]/40"}`}
+              >
+                <h4
+                  className={`text-[10px] font-black uppercase tracking-widest ${theme.group === "Dark" ? "text-purple-400" : "text-purple-700"}`}
+                >
                   Deep Reasoning Log
                 </h4>
                 <button
                   onClick={() => setExpandedLog("reasoning")}
-                  className={`p-1 rounded transition-colors ${theme.group === 'Dark' ? 'text-white/50 hover:text-white hover:bg-white/10' : 'text-[#5C4033] hover:text-[#3E2723] hover:bg-amber-100'}`}
+                  className={`p-1 rounded transition-colors ${theme.group === "Dark" ? "text-white/50 hover:text-white hover:bg-white/10" : "text-[#5C4033] hover:text-[#3E2723] hover:bg-amber-100"}`}
                 >
                   <Maximize2 size={12} />
                 </button>
               </div>
               <div
                 ref={streamScrollRef}
-                className={`flex-1 min-h-[200px] shrink-0 p-4 overflow-y-auto custom-scrollbar scroll-smooth ${theme.group === 'Dark' ? 'bg-[#0a0a0a]' : 'bg-[#FFFDF9] border border-amber-200/60 rounded-xl m-2 shadow-inner'}`}
+                className={`flex-1 min-h-[200px] shrink-0 p-4 overflow-y-auto custom-scrollbar scroll-smooth ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-[#FFFDF9] border border-amber-200/60 rounded-xl m-2 shadow-inner"}`}
               >
-                <div className={`font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap ${theme.group === 'Dark' ? 'text-green-400/80' : 'text-[#3E2723] font-medium'}`}>
+                <div
+                  className={`font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap ${theme.group === "Dark" ? "text-green-400/80" : "text-[#3E2723] font-medium"}`}
+                >
                   {fullScreenStreamData ||
                     "Matrix Lite x Annie xin chào cou nhé dấu<3"}
                 </div>
               </div>
 
               {/* Phần 4: Error & Diagnostic */}
-              <div className={`p-3 border-y flex justify-between items-center shrink-0 ${theme.group === 'Dark' ? 'border-white/10' : 'border-amber-200/50 bg-[#FFFDF9]/40'}`}>
-                <h4 className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${theme.group === 'Dark' ? 'text-red-400' : 'text-red-700'}`}>
+              <div
+                className={`p-3 border-y flex justify-between items-center shrink-0 ${theme.group === "Dark" ? "border-white/10" : "border-amber-200/50 bg-[#FFFDF9]/40"}`}
+              >
+                <h4
+                  className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${theme.group === "Dark" ? "text-red-400" : "text-red-700"}`}
+                >
                   Error & Diagnostics Log
                   {systemLogs && (
                     <button
@@ -1823,14 +2033,19 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                 </h4>
                 <button
                   onClick={() => setExpandedLog("error")}
-                  className={`p-1 rounded transition-colors ${theme.group === 'Dark' ? 'text-white/50 hover:text-white hover:bg-white/10' : 'text-[#5C4033] hover:text-[#3E2723] hover:bg-amber-100'}`}
+                  className={`p-1 rounded transition-colors ${theme.group === "Dark" ? "text-white/50 hover:text-white hover:bg-white/10" : "text-[#5C4033] hover:text-[#3E2723] hover:bg-amber-100"}`}
                 >
                   <Maximize2 size={12} />
                 </button>
               </div>
-              <div className={`h-48 shrink-0 p-4 overflow-y-auto custom-scrollbar scroll-smooth ${theme.group === 'Dark' ? 'bg-[#110000]' : 'bg-red-50/40 border border-red-100 rounded-xl m-2 shadow-inner'}`}>
-                <div className={`font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap ${theme.group === 'Dark' ? 'text-red-400/80' : 'text-red-800 font-medium'}`}>
-                  {systemLogs || "> Hệ thống trạng thái bình thường...\n> Không có lỗi phát sinh."}
+              <div
+                className={`h-48 shrink-0 p-4 overflow-y-auto custom-scrollbar scroll-smooth ${theme.group === "Dark" ? "bg-[#110000]" : "bg-red-50/40 border border-red-100 rounded-xl m-2 shadow-inner"}`}
+              >
+                <div
+                  className={`font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap ${theme.group === "Dark" ? "text-red-400/80" : "text-red-800 font-medium"}`}
+                >
+                  {systemLogs ||
+                    "> Hệ thống trạng thái bình thường...\n> Không có lỗi phát sinh."}
                 </div>
               </div>
             </motion.div>
@@ -1852,9 +2067,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
           />
         )}
 
-        {showStatus && (
-          <StatusModal onClose={() => setShowStatus(false)} />
-        )}
+        {showStatus && <StatusModal onClose={() => setShowStatus(false)} />}
 
         {showRules && (
           <motion.div
@@ -1864,23 +2077,27 @@ Hành động tiếp theo của người chơi: ${userAction}`;
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col w-[100dvw] h-[100dvh] p-0 m-0 overflow-hidden"
             onClick={() => setShowRules(false)}
           >
-            <div 
-              className={`w-full h-full flex flex-col rounded-none border-0 shadow-none overflow-hidden ${theme.group === 'Dark' ? 'bg-[#0a0a0a]' : 'bg-slate-50'}`}
+            <div
+              className={`w-full h-full flex flex-col rounded-none border-0 shadow-none overflow-hidden ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-slate-50"}`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={`p-4 border-b flex items-center justify-between shrink-0 ${theme.group === 'Dark' ? 'border-white/10' : 'border-slate-300'}`}>
+              <div
+                className={`p-4 border-b flex items-center justify-between shrink-0 ${theme.group === "Dark" ? "border-white/10" : "border-slate-300"}`}
+              >
                 <h2 className="text-xl font-black uppercase tracking-widest text-indigo-500 flex items-center gap-2">
                   <ListTodo size={20} /> PLAYER RULES
                 </h2>
                 <button
                   onClick={() => setShowRules(false)}
-                  className={`p-2 rounded-lg transition-colors cursor-pointer ${theme.group === 'Dark' ? 'text-white/50 hover:text-white' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'}`}
+                  className={`p-2 rounded-lg transition-colors cursor-pointer ${theme.group === "Dark" ? "text-white/50 hover:text-white" : "text-slate-600 hover:text-slate-900 hover:bg-slate-200"}`}
                 >
                   <X size={20} />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar text-slate-700 dark-theme:text-white/80 flex flex-col">
-                <p className={`text-sm ${theme.group === 'Dark' ? 'text-white/50' : 'text-slate-600 font-medium'}`}>
+                <p
+                  className={`text-sm ${theme.group === "Dark" ? "text-white/50" : "text-slate-600 font-medium"}`}
+                >
                   Thêm các quy tắc bối cảnh, hành vi hoặc phong cách kể chuyện
                   mà AI phải tuân thủ trong suốt quá trình chơi.
                 </p>
@@ -1905,12 +2122,14 @@ Hành động tiếp theo của người chơi: ${userAction}`;
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex flex-col w-[100dvw] h-[100dvh] p-0 m-0 overflow-hidden"
             onClick={() => setShowMemory(false)}
           >
-            <div 
-              className={`w-full h-full flex flex-col rounded-none border-0 overflow-hidden shadow-none ${theme.group === 'Dark' ? 'bg-[#050505]' : 'bg-slate-50'}`}
+            <div
+              className={`w-full h-full flex flex-col rounded-none border-0 overflow-hidden shadow-none ${theme.group === "Dark" ? "bg-[#050505]" : "bg-slate-50"}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className={`p-4 md:p-6 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 px-6 md:px-8 ${theme.group === 'Dark' ? 'border-white/10 text-white bg-black/40' : 'border-slate-300 bg-white shadow-sm text-slate-800'}`}>
+              <div
+                className={`p-4 md:p-6 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 px-6 md:px-8 ${theme.group === "Dark" ? "border-white/10 text-white bg-black/40" : "border-slate-300 bg-white shadow-sm text-slate-800"}`}
+              >
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-purple-500/10 rounded-xl border border-purple-500/20 text-purple-500">
                     <BrainCircuit size={22} className="animate-pulse" />
@@ -1919,40 +2138,56 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                     <h2 className="text-xl font-black uppercase tracking-widest theme-text-base leading-none">
                       TRÍ NHỚ AI
                     </h2>
-                    <span className={`text-[10px] tracking-wider uppercase font-mono mt-1 block ${theme.group === 'Dark' ? 'text-white/40' : 'text-slate-500'}`}>
+                    <span
+                      className={`text-[10px] tracking-wider uppercase font-mono mt-1 block ${theme.group === "Dark" ? "text-white/40" : "text-slate-500"}`}
+                    >
                       AI Memory Matrix & Context Config
                     </span>
                   </div>
                 </div>
 
                 {/* Tabs */}
-                <div className={`flex gap-1.5 p-1 rounded-xl border uppercase font-bold text-xs ${theme.group === 'Dark' ? 'theme-panel shadow-none border-transparent bg-white/5' : 'bg-slate-100 border-slate-300 shadow-inner'}`}>
+                <div
+                  className={`flex gap-1.5 p-1 rounded-xl border uppercase font-bold text-xs ${theme.group === "Dark" ? "theme-panel shadow-none border-transparent bg-white/5" : "bg-slate-100 border-slate-300 shadow-inner"}`}
+                >
                   <button
-                    onClick={() => setMemoryActiveTab('settings')}
+                    onClick={() => setMemoryActiveTab("settings")}
                     className={`px-4 py-2 rounded-lg tracking-wider transition-all cursor-pointer ${
-                      memoryActiveTab === 'settings'
-                        ? (theme.group === 'Dark' ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20" : "bg-blue-600 text-white font-bold shadow-md shadow-blue-500/10")
-                        : (theme.group === 'Dark' ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900")
+                      memoryActiveTab === "settings"
+                        ? theme.group === "Dark"
+                          ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
+                          : "bg-blue-600 text-white font-bold shadow-md shadow-blue-500/10"
+                        : theme.group === "Dark"
+                          ? "text-white/60 hover:text-white"
+                          : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     Thiết Lập
                   </button>
                   <button
-                    onClick={() => setMemoryActiveTab('state')}
+                    onClick={() => setMemoryActiveTab("state")}
                     className={`px-4 py-2 rounded-lg tracking-wider transition-all cursor-pointer ${
-                      memoryActiveTab === 'state'
-                        ? (theme.group === 'Dark' ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20" : "bg-blue-600 text-white font-bold shadow-md shadow-blue-500/10")
-                        : (theme.group === 'Dark' ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900")
+                      memoryActiveTab === "state"
+                        ? theme.group === "Dark"
+                          ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
+                          : "bg-blue-600 text-white font-bold shadow-md shadow-blue-500/10"
+                        : theme.group === "Dark"
+                          ? "text-white/60 hover:text-white"
+                          : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     Trí nhớ Cuốn chiếu
                   </button>
                   <button
-                    onClick={() => setMemoryActiveTab('logs')}
+                    onClick={() => setMemoryActiveTab("logs")}
                     className={`px-4 py-2 rounded-lg tracking-wider transition-all cursor-pointer ${
-                      memoryActiveTab === 'logs'
-                        ? (theme.group === 'Dark' ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20" : "bg-blue-600 text-white font-bold shadow-md shadow-blue-500/10")
-                        : (theme.group === 'Dark' ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900")
+                      memoryActiveTab === "logs"
+                        ? theme.group === "Dark"
+                          ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
+                          : "bg-blue-600 text-white font-bold shadow-md shadow-blue-500/10"
+                        : theme.group === "Dark"
+                          ? "text-white/60 hover:text-white"
+                          : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     Log Ký Ức ({messages.filter((m) => m.outline).length})
@@ -1973,7 +2208,7 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                   </button>
                   <button
                     onClick={() => setShowMemory(false)}
-                    className={`px-4 py-2 rounded-lg font-bold text-xs transition-colors cursor-pointer tracking-wider uppercase ${theme.group === 'Dark' ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-slate-200 hover:bg-slate-300 text-slate-800'}`}
+                    className={`px-4 py-2 rounded-lg font-bold text-xs transition-colors cursor-pointer tracking-wider uppercase ${theme.group === "Dark" ? "bg-white/10 hover:bg-white/20 text-white" : "bg-slate-200 hover:bg-slate-300 text-slate-800"}`}
                   >
                     Đóng
                   </button>
@@ -1981,13 +2216,28 @@ Hành động tiếp theo của người chơi: ${userAction}`;
               </div>
 
               {/* Main space */}
-              <div className={`flex-1 overflow-y-auto p-4 md:p-8 space-y-6 custom-scrollbar ${theme.group === 'Dark' ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
-                {memoryActiveTab === 'settings' && (
+              <div
+                className={`flex-1 overflow-y-auto p-4 md:p-8 space-y-6 custom-scrollbar ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-white"}`}
+              >
+                {memoryActiveTab === "settings" && (
                   <div className="w-full space-y-8 py-4 px-4 md:px-8">
                     {/* Intro card */}
                     <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/20">
                       <p className="text-slate-700 dark-theme:text-white/80 text-sm leading-relaxed">
-                        Chào mừng bạn đến với <strong className="text-purple-400 font-bold">Ma Trận Trí Nhớ AI</strong>. Game Matrix Lite v2 sử dụng hệ thống RAG (Retrieval-Augmented Generation) kết hợp với cửa sổ lịch sử trích xuất động để gửi dữ liệu tối ưu nhất cho mô hình <strong className="text-purple-400 font-bold">Gemini 3.1 Pro</strong>. Tại đây, bạn hoàn toàn có thể tinh chỉnh cách AI lưu giữ ký ức hoàn toàn miễn phí mà không lo tốn kém tài nguyên.
+                        Chào mừng bạn đến với{" "}
+                        <strong className="text-purple-400 font-bold">
+                          Ma Trận Trí Nhớ AI
+                        </strong>
+                        . Game Matrix Lite v2 sử dụng hệ thống RAG
+                        (Retrieval-Augmented Generation) kết hợp với cửa sổ lịch
+                        sử trích xuất động để gửi dữ liệu tối ưu nhất cho mô
+                        hình{" "}
+                        <strong className="text-purple-400 font-bold">
+                          Gemini 3.1 Pro
+                        </strong>
+                        . Tại đây, bạn hoàn toàn có thể tinh chỉnh cách AI lưu
+                        giữ ký ức hoàn toàn miễn phí mà không lo tốn kém tài
+                        nguyên.
                       </p>
                     </div>
 
@@ -2009,7 +2259,11 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             </span>
                           </div>
                           <p className="text-xs text-slate-600 dark-theme:text-white/70 leading-relaxed">
-                            Số lượt trò chơi mới nhất được gửi <strong>toàn văn (full text)</strong> bao gồm cả dàn ý, bối cảnh diễn biến và hành động người chơi. Giúp AI hiểu rõ nét nhất văn phong, diễn biến cực kỳ mượt mà và trực tiếp tại khung bối cảnh hiện tại.
+                            Số lượt trò chơi mới nhất được gửi{" "}
+                            <strong>toàn văn (full text)</strong> bao gồm cả dàn
+                            ý, bối cảnh diễn biến và hành động người chơi. Giúp
+                            AI hiểu rõ nét nhất văn phong, diễn biến cực kỳ mượt
+                            mà và trực tiếp tại khung bối cảnh hiện tại.
                           </p>
                         </div>
                         <div className="flex items-center gap-4 pt-2">
@@ -2019,18 +2273,28 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             max="30"
                             step="1"
                             value={memoryFullTurnsCount}
-                            onChange={(e) => setMemoryFullTurnsCount(Number(e.target.value))}
+                            onChange={(e) =>
+                              setMemoryFullTurnsCount(Number(e.target.value))
+                            }
                             className="flex-1 accent-purple-500 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
                           />
                           <div className="flex gap-1.5 shrink-0">
                             <button
-                              onClick={() => setMemoryFullTurnsCount(Math.max(2, memoryFullTurnsCount - 1))}
+                              onClick={() =>
+                                setMemoryFullTurnsCount(
+                                  Math.max(2, memoryFullTurnsCount - 1),
+                                )
+                              }
                               className="px-2.5 py-1 text-xs font-bold rounded-lg theme-panel shadow-none border-transparent theme-panel-hover theme-text-base border border-transparent cursor-pointer"
                             >
                               -
                             </button>
                             <button
-                              onClick={() => setMemoryFullTurnsCount(Math.min(30, memoryFullTurnsCount + 1))}
+                              onClick={() =>
+                                setMemoryFullTurnsCount(
+                                  Math.min(30, memoryFullTurnsCount + 1),
+                                )
+                              }
                               className="px-2.5 py-1 text-xs font-bold rounded-lg theme-panel shadow-none border-transparent theme-panel-hover theme-text-base border border-transparent cursor-pointer"
                             >
                               +
@@ -2056,7 +2320,11 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             </span>
                           </div>
                           <p className="text-xs text-slate-600 dark-theme:text-white/70 leading-relaxed">
-                            Số lượng log tóm tắt tối đa trong quá khứ được RAG tìm kiếm thông minh từ cơ sở dữ liệu ký ức dựa trên ngữ cảnh phát ngôn hiện tại, hoặc truyền nén lịch sử để AI nhớ lại các hành trình sâu trong ký ức. Tối ưu trí nhớ vĩnh viễn không giới hạn.
+                            Số lượng log tóm tắt tối đa trong quá khứ được RAG
+                            tìm kiếm thông minh từ cơ sở dữ liệu ký ức dựa trên
+                            ngữ cảnh phát ngôn hiện tại, hoặc truyền nén lịch sử
+                            để AI nhớ lại các hành trình sâu trong ký ức. Tối ưu
+                            trí nhớ vĩnh viễn không giới hạn.
                           </p>
                         </div>
                         <div className="flex items-center gap-4 pt-2">
@@ -2066,18 +2334,28 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             max="300"
                             step="5"
                             value={memoryLogsCount}
-                            onChange={(e) => setMemoryLogsCount(Number(e.target.value))}
+                            onChange={(e) =>
+                              setMemoryLogsCount(Number(e.target.value))
+                            }
                             className="flex-1 accent-purple-500 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
                           />
                           <div className="flex gap-1.5 shrink-0">
                             <button
-                              onClick={() => setMemoryLogsCount(Math.max(5, memoryLogsCount - 5))}
+                              onClick={() =>
+                                setMemoryLogsCount(
+                                  Math.max(5, memoryLogsCount - 5),
+                                )
+                              }
                               className="px-2.5 py-1 text-xs font-bold rounded-lg theme-panel shadow-none border-transparent theme-panel-hover theme-text-base border border-transparent cursor-pointer"
                             >
                               -
                             </button>
                             <button
-                              onClick={() => setMemoryLogsCount(Math.min(300, memoryLogsCount + 5))}
+                              onClick={() =>
+                                setMemoryLogsCount(
+                                  Math.min(300, memoryLogsCount + 5),
+                                )
+                              }
                               className="px-2.5 py-1 text-xs font-bold rounded-lg theme-panel shadow-none border-transparent theme-panel-hover theme-text-base border border-transparent cursor-pointer"
                             >
                               +
@@ -2089,63 +2367,112 @@ Hành động tiếp theo của người chơi: ${userAction}`;
 
                     {/* Pro Tip logic */}
                     <div className="p-4 bg-amber-500/5 border border-amber-500/20 text-amber-300 text-xs rounded-xl flex items-start gap-2.5 leading-relaxed theme-panel shadow-none border-transparent">
-                      <span className="font-bold text-base shrink-0 mt-[-3px]">💡</span>
+                      <span className="font-bold text-base shrink-0 mt-[-3px]">
+                        💡
+                      </span>
                       <p>
-                        <strong>Gợi ý cài đặt hoàn hảo:</strong> Đặt số lượng lượt chơi full từ <strong>8 - 15 lượt</strong> giúp AI giữ được bối cảnh mượt mà có liên kết chặt chẽ nhất. Đặt số log ký ức từ <strong>30 - 80 tóm tắt</strong> giúp AI tìm kiếm hoặc lội dòng lịch sử một cách thông minh, không lo tràn token mà vẫn đảm bảo ký ức dài hạn tuyệt đối bền vững!
+                        <strong>Gợi ý cài đặt hoàn hảo:</strong> Đặt số lượng
+                        lượt chơi full từ <strong>8 - 15 lượt</strong> giúp AI
+                        giữ được bối cảnh mượt mà có liên kết chặt chẽ nhất. Đặt
+                        số log ký ức từ <strong>30 - 80 tóm tắt</strong> giúp AI
+                        tìm kiếm hoặc lội dòng lịch sử một cách thông minh,
+                        không lo tràn token mà vẫn đảm bảo ký ức dài hạn tuyệt
+                        đối bền vững!
                       </p>
                     </div>
                   </div>
                 )}
 
-                {memoryActiveTab === 'state' && (
+                {memoryActiveTab === "state" && (
                   <div className="w-full space-y-6 px-4 md:px-8 py-4">
-                     <div className="flex items-center justify-between">
-                       <h3 className="text-sm font-black uppercase text-purple-400 tracking-wider">
-                         Trí nhớ Cuốn chiếu (World State)
-                       </h3>
-                     </div>
-                     <div className="p-6 theme-panel shadow-none border-transparent rounded-2xl flex flex-col space-y-4 text-slate-700 dark-theme:text-white/80 leading-relaxed text-sm">
-                       <p>
-                         <strong>Tóm tắt cuốn chiếu là gì?</strong> Ký ức AI sẽ dần bị phai nhạt và dẫn tới nhầm lẫn chi tiết theo thời gian (VD: Quên MC đã cởi áo, quên mất NPC đã bị thương...). Việc tóm tắt Cuốn Chiếu sẽ yêu cầu AI tự đọc lại các lượt chơi kết hợp với Trạng thái cũ để cập nhật một bộ não mới.
-                       </p>
-                       <p>
-                         <strong>Khi nào nên bấm?</strong> Kể từ <strong>lượt thứ 10</strong> trở đi, hoặc sau bất cứ sự kiện lớn nào (đổi map, chuyển cảnh, kết thúc một trận chiến/vấn đề), bạn nên bấm để cập nhật trí nhớ cho hệ thống.
-                       </p>
-                       <div className="pt-2">
-                         <button
-                           onClick={async () => {
-                             if (isGenerating) return;
-                             toast.info("Yêu cầu AI phân tích và tóm tắt cuốn chiếu... đang xử lý!");
-                             handleSendSummarize();
-                           }}
-                           disabled={isGenerating || isSummarizing || messages.filter((m) => m.outline).length === (gameData.worldData?.lastSummarizedTurnIndex || 0)}
-                           className="px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 theme-text-base font-bold transition-colors cursor-pointer flex items-center justify-center gap-2 w-full disabled:opacity-50"
-                         >
-                           {isSummarizing ? <Loader2 size={18} className="animate-spin text-amber-300" /> : <Sparkles size={18} className="animate-pulse" />}{isSummarizing ? " ĐANG TỐM TẮT CUỐN CHIẾU... (" + formatDuration(summarizeDuration) + ")" : " THỰC HIỆN TÓM TẮT CUỐN CHIẾU LỊCH SỬ THẾ GIỚI"}
-                         </button>
-                       </div>
-                       
-                       <div className="pt-4 mt-4 border-t border-white/10 space-y-3">
-                         <div className="flex gap-4">
-                           <div className="flex-1 theme-panel shadow-none border-transparent p-3 rounded-lg text-center">
-                              <p className="text-xs text-white/50 mb-1 tracking-wider uppercase">ĐÃ LƯU KÝ ỨC</p>
-                              <p className="text-xl font-bold theme-text-base">{gameData.worldData?.lastSummarizedTurnIndex || 0}</p>
-                           </div>
-                           <div className="flex-1 bg-purple-500/10 border border-purple-500/20 p-3 rounded-lg text-center">
-                              <p className="text-xs text-purple-400 mb-1 tracking-wider uppercase">LƯỢT CHỜ TÓM TẮT</p>
-                              <p className="text-xl font-bold text-purple-300">{messages.filter(m => m.outline).length - (gameData.worldData?.lastSummarizedTurnIndex || 0)}</p>
-                           </div>
-                         </div>
-                         <p className="font-bold text-purple-300 mt-4">Dữ liệu World State mới nhất đang lưu trong não bộ AI:</p>
-                         <div className="p-4 theme-panel shadow-none border-transparent rounded-xl font-mono text-xs text-purple-300 whitespace-pre-wrap border border-purple-500/10 min-h-24">
-                           {gameData.worldData?.worldState || "Chưa có dữ liệu thống kê cuốn chiếu nào. Hãy tạo những lượt chơi đầu tiên và nhấn nút phía trên để bắt đầu!"}
-                         </div>
-                       </div>
-                     </div>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black uppercase text-purple-400 tracking-wider">
+                        Trí nhớ Cuốn chiếu (World State)
+                      </h3>
+                    </div>
+                    <div className="p-6 theme-panel shadow-none border-transparent rounded-2xl flex flex-col space-y-4 text-slate-700 dark-theme:text-white/80 leading-relaxed text-sm">
+                      <p>
+                        <strong>Tóm tắt cuốn chiếu là gì?</strong> Ký ức AI sẽ
+                        dần bị phai nhạt và dẫn tới nhầm lẫn chi tiết theo thời
+                        gian (VD: Quên MC đã cởi áo, quên mất NPC đã bị
+                        thương...). Việc tóm tắt Cuốn Chiếu sẽ yêu cầu AI tự đọc
+                        lại các lượt chơi kết hợp với Trạng thái cũ để cập nhật
+                        một bộ não mới.
+                      </p>
+                      <p>
+                        <strong>Khi nào nên bấm?</strong> Kể từ{" "}
+                        <strong>lượt thứ 10</strong> trở đi, hoặc sau bất cứ sự
+                        kiện lớn nào (đổi map, chuyển cảnh, kết thúc một trận
+                        chiến/vấn đề), bạn nên bấm để cập nhật trí nhớ cho hệ
+                        thống.
+                      </p>
+                      <div className="pt-2">
+                        <button
+                          onClick={async () => {
+                            if (isGenerating) return;
+                            toast.info(
+                              "Yêu cầu AI phân tích và tóm tắt cuốn chiếu... đang xử lý!",
+                            );
+                            handleSendSummarize();
+                          }}
+                          disabled={
+                            isGenerating ||
+                            isSummarizing ||
+                            messages.filter((m) => m.outline).length ===
+                              (gameData.worldData?.lastSummarizedTurnIndex || 0)
+                          }
+                          className="px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 theme-text-base font-bold transition-colors cursor-pointer flex items-center justify-center gap-2 w-full disabled:opacity-50"
+                        >
+                          {isSummarizing ? (
+                            <Loader2
+                              size={18}
+                              className="animate-spin text-amber-300"
+                            />
+                          ) : (
+                            <Sparkles size={18} className="animate-pulse" />
+                          )}
+                          {isSummarizing
+                            ? " ĐANG TỐM TẮT CUỐN CHIẾU... (" +
+                              formatDuration(summarizeDuration) +
+                              ")"
+                            : " THỰC HIỆN TÓM TẮT CUỐN CHIẾU LỊCH SỬ THẾ GIỚI"}
+                        </button>
+                      </div>
+
+                      <div className="pt-4 mt-4 border-t border-white/10 space-y-3">
+                        <div className="flex gap-4">
+                          <div className="flex-1 theme-panel shadow-none border-transparent p-3 rounded-lg text-center">
+                            <p className="text-xs text-white/50 mb-1 tracking-wider uppercase">
+                              ĐÃ LƯU KÝ ỨC
+                            </p>
+                            <p className="text-xl font-bold theme-text-base">
+                              {gameData.worldData?.lastSummarizedTurnIndex || 0}
+                            </p>
+                          </div>
+                          <div className="flex-1 bg-purple-500/10 border border-purple-500/20 p-3 rounded-lg text-center">
+                            <p className="text-xs text-purple-400 mb-1 tracking-wider uppercase">
+                              LƯỢT CHỜ TÓM TẮT
+                            </p>
+                            <p className="text-xl font-bold text-purple-300">
+                              {messages.filter((m) => m.outline).length -
+                                (gameData.worldData?.lastSummarizedTurnIndex ||
+                                  0)}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="font-bold text-purple-300 mt-4">
+                          Dữ liệu World State mới nhất đang lưu trong não bộ AI:
+                        </p>
+                        <div className="p-4 theme-panel shadow-none border-transparent rounded-xl font-mono text-xs text-purple-300 whitespace-pre-wrap border border-purple-500/10 min-h-24">
+                          {gameData.worldData?.worldState ||
+                            "Chưa có dữ liệu thống kê cuốn chiếu nào. Hãy tạo những lượt chơi đầu tiên và nhấn nút phía trên để bắt đầu!"}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
-                {memoryActiveTab === 'logs' && (
+                {memoryActiveTab === "logs" && (
                   <div className="w-full space-y-6 px-4 md:px-8 py-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-black uppercase text-purple-400 tracking-wider">
@@ -2157,9 +2484,13 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                             onClick={() => {
                               const textToExport = messages
                                 .filter((m) => m.outline)
-                                .map((m, idx) => `Lượt ${idx + 1}: ${m.outline}`)
+                                .map(
+                                  (m, idx) => `Lượt ${idx + 1}: ${m.outline}`,
+                                )
                                 .join("\n\n");
-                              const blob = new Blob([textToExport], { type: "text/plain;charset=utf-8" });
+                              const blob = new Blob([textToExport], {
+                                type: "text/plain;charset=utf-8",
+                              });
                               const url = URL.createObjectURL(blob);
                               const a = document.createElement("a");
                               a.href = url;
@@ -2192,8 +2523,14 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                                 <button
                                   onClick={async (e) => {
                                     e.stopPropagation();
-                                    await ragService.addMemory(gameData.id, `[CORE MEMORY - Người dùng GHIM]\nLượt ${idx + 1}:\n${m.outline}`, true);
-                                    toast.success(`Đã GHIM Lượt ${idx + 1} thành KÝ ỨC CỐT LÕI (Core Memory)!`);
+                                    await ragService.addMemory(
+                                      gameData.id,
+                                      `[CORE MEMORY - Người dùng GHIM]\nLượt ${idx + 1}:\n${m.outline}`,
+                                      true,
+                                    );
+                                    toast.success(
+                                      `Đã GHIM Lượt ${idx + 1} thành KÝ ỨC CỐT LÕI (Core Memory)!`,
+                                    );
                                   }}
                                   className="px-2 py-0.5 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 border border-yellow-500/20 rounded-md text-[10px] font-bold uppercase transition-colors cursor-pointer"
                                   title="Đánh dấu Ký ức này là Sổ Tay Ghim để AI không bao giờ quên"
@@ -2216,11 +2553,18 @@ Hành động tiếp theo của người chơi: ${userAction}`;
 
                     {messages.filter((m) => m.outline).length === 0 && (
                       <div className="text-center opacity-40 py-20 border border-dashed border-white/10 rounded-2xl theme-panel shadow-none border-transparent flex flex-col items-center justify-center gap-3">
-                        <BrainCircuit size={48} className="text-purple-400 stroke-[1.5] opacity-50" />
+                        <BrainCircuit
+                          size={48}
+                          className="text-purple-400 stroke-[1.5] opacity-50"
+                        />
                         <div>
-                          <p className="font-bold text-sm theme-text-base">Chưa ghi nhận ký ức hệ thống</p>
+                          <p className="font-bold text-sm theme-text-base">
+                            Chưa ghi nhận ký ức hệ thống
+                          </p>
                           <p className="text-xs text-white/50 mt-1 max-w-sm">
-                            Khi bạn tiến hành chơi lượt tiếp theo, trí tuệ nhân tạo sẽ tự động phân tích và ghi nhận dàn ý tóm tắt câu chuyện vào đây!
+                            Khi bạn tiến hành chơi lượt tiếp theo, trí tuệ nhân
+                            tạo sẽ tự động phân tích và ghi nhận dàn ý tóm tắt
+                            câu chuyện vào đây!
                           </p>
                         </div>
                       </div>
@@ -2239,14 +2583,16 @@ Hành động tiếp theo của người chơi: ${userAction}`;
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-50 backdrop-blur-xl flex flex-col w-[100dvw] h-[100dvh] p-0 m-0 overflow-hidden ${theme.group === 'Dark' ? 'bg-black/80' : 'bg-amber-900/15'}`}
+            className={`fixed inset-0 z-50 backdrop-blur-xl flex flex-col w-[100dvw] h-[100dvh] p-0 m-0 overflow-hidden ${theme.group === "Dark" ? "bg-black/80" : "bg-amber-900/15"}`}
             onClick={() => setShowSettings(false)}
           >
-            <div 
-              className={`w-full h-full flex flex-col border-0 rounded-none overflow-hidden shadow-none ${theme.group === 'Dark' ? 'bg-[#050505]' : 'bg-[#FAF7F0]'}`}
+            <div
+              className={`w-full h-full flex flex-col border-0 rounded-none overflow-hidden shadow-none ${theme.group === "Dark" ? "bg-[#050505]" : "bg-[#FAF7F0]"}`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={`p-4 md:p-6 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 theme-panel shadow-none border-transparent ${theme.group === 'Dark' ? 'border-white/10' : 'border-amber-200/50 bg-[#FFFDF9]'}`}>
+              <div
+                className={`p-4 md:p-6 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 theme-panel shadow-none border-transparent ${theme.group === "Dark" ? "border-white/10" : "border-amber-200/50 bg-[#FFFDF9]"}`}
+              >
                 <h2 className="text-xl font-black uppercase tracking-widest theme-text-base flex items-center gap-2">
                   <SettingsIcon size={20} /> CẤU HÌNH IN-GAME
                 </h2>
@@ -2262,7 +2608,9 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                   </button>
                 </div>
               </div>
-              <div className={`flex-1 overflow-y-auto relative ${theme.group === 'Dark' ? 'bg-[#0a0a0a]' : 'bg-[#FFFDF9]'}`}>
+              <div
+                className={`flex-1 overflow-y-auto relative ${theme.group === "Dark" ? "bg-[#0a0a0a]" : "bg-[#FFFDF9]"}`}
+              >
                 <Settings />
               </div>
             </div>
@@ -2321,7 +2669,8 @@ Hành động tiếp theo của người chơi: ${userAction}`;
                   {expandedLog === "reasoning"
                     ? fullScreenStreamData ||
                       "Matrix Lite x Annie xin chào cou nhé dấu<3"
-                    : systemLogs || "> Hệ thống trạng thái bình thường...\n> Không có lỗi phát sinh."}
+                    : systemLogs ||
+                      "> Hệ thống trạng thái bình thường...\n> Không có lỗi phát sinh."}
                 </div>
               </div>
             </motion.div>
